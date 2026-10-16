@@ -42,7 +42,7 @@ Format Java with:
 Maven dependency versions are in `gradle/libs.versions.toml`. Dependency locking and verification are enabled. After changing a dependency, update both:
 
 ```sh
-./gradlew dependencies --write-locks
+./gradlew --write-verification-metadata sha256 dependencies --write-locks
 ./gradlew --write-verification-metadata sha256 build
 ```
 

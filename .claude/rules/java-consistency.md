@@ -2,7 +2,7 @@
 
 Match the closest existing file exactly. A new class looks like its neighbours: the same package layout, naming, logging and tests.
 
-- **Java 25 and Gradle.** Every plugin and library version is in `gradle/libs.versions.toml`. Dependency locking and verification are on: after changing a dependency run `./gradlew dependencies --write-locks` and `./gradlew --write-verification-metadata sha256 build`.
+- **Java 25 and Gradle.** Every plugin and library version is in `gradle/libs.versions.toml`. Dependency locking and verification are on: after changing a dependency run `./gradlew --write-verification-metadata sha256 dependencies --write-locks` and `./gradlew --write-verification-metadata sha256 build`.
 - **Jars the build reads from outside Maven** (Minecraft, Iris, Sodium, Distant Horizons and the neighbouring mods the tests check) are in `deps.json`, pinned by sha1, and fetched by `scripts/fetch-deps.py` into `libs/`. Never copy a jar into `libs/` by hand.
 - **Formatting is Spotless** (palantir-java-format). Run `./gradlew spotlessApply`; never format against it by hand. Markdown, YAML and JSON are formatted by Prettier (`.prettierrc.yml`).
 - **Error Prone and NullAway** run on every compile, warnings as errors. Every package has a `package-info.java` with `@NullMarked`; what can be null is `@Nullable`. A suppression is as narrow as possible and carries a one-line reason.

@@ -68,7 +68,7 @@ The complete package map is in [architecture](docs/architecture.md#code-layout).
 External jars belong in `deps.json`, pinned by SHA-1. Do not copy them into `libs/` by hand. Maven dependency versions belong in `gradle/libs.versions.toml`. After changing them, refresh dependency locks and verification metadata:
 
 ```sh
-./gradlew dependencies --write-locks
+./gradlew --write-verification-metadata sha256 dependencies --write-locks
 ./gradlew --write-verification-metadata sha256 build
 ```
 

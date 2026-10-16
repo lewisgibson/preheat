@@ -69,7 +69,7 @@ Without the token, the workflow still publishes to GitHub and says that Modrinth
 
 ## Dependency updates
 
-Dependabot opens a pull request each week for newer Gradle dependencies, GitHub Actions and the Prettier pin, grouped into one for minor and patch updates. Those merge by themselves once Build, Lint and Security pass; major updates wait for a person. `maven-artifact` is left alone on purpose, because it moves with NeoForge. A Gradle update also needs its lock and verification files refreshed (`./gradlew dependencies --write-locks` and `./gradlew --write-verification-metadata sha256 build`), so until that is done by hand its build fails and it waits. A dependency update does not change the mod's version, so it does not publish a release.
+Dependabot opens a pull request each week for newer Gradle dependencies, GitHub Actions and the Prettier pin, grouped into one for minor and patch updates. Those merge by themselves once Build, Lint and Security pass; major updates wait for a person. `maven-artifact` is left alone on purpose, because it moves with NeoForge. A Gradle update also needs its lock and verification files refreshed. The Dependabot Gradle Locks workflow does that on each Gradle pull request, the same way as by hand (`./gradlew --write-verification-metadata sha256 dependencies --write-locks` and `./gradlew --write-verification-metadata sha256 build`): it records the checksum Maven Central serves for each new artifact, keeps every checksum already pinned, pushes the files to the pull request and starts the checks again, which then verify them strictly. A dependency update does not change the mod's version, so it does not publish a release.
 
 The jars in `deps.json` are not Maven dependencies, so Dependabot does not see them. A new Iris, Sodium or Distant Horizons is added there by hand, with its row in the compatibility matrix.
 
@@ -77,12 +77,13 @@ For the merge to wait for the checks, the repository needs "Allow auto-merge" tu
 
 ## CI
 
-| Workflow                    | Checks                                                                      |
-| --------------------------- | --------------------------------------------------------------------------- |
-| `build.yaml`                | Pinned jar fetch, the Gradle build, coverage and the compatibility matrix   |
-| `lint.yaml`                 | Prettier, actionlint, shellcheck, the script tests and the changelog format |
-| `security.yaml`             | gitleaks                                                                    |
-| `release.yaml`              | The version check, then the release gate, checksums, notes and publishing   |
-| `dependabot-auto-merge.yml` | Merges Dependabot's minor and patch updates once the required checks pass   |
+| Workflow                      | Checks                                                                           |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| `build.yaml`                  | Pinned jar fetch, the Gradle build, coverage and the compatibility matrix        |
+| `lint.yaml`                   | Prettier, actionlint, shellcheck, the script tests and the changelog format      |
+| `security.yaml`               | gitleaks                                                                         |
+| `release.yaml`                | The version check, then the release gate, checksums, notes and publishing        |
+| `dependabot-auto-merge.yml`   | Merges Dependabot's minor and patch updates once the required checks pass        |
+| `dependabot-gradle-locks.yml` | Writes the Gradle locks and verification metadata on Dependabot's Gradle updates |
 
 CI runs deterministic checks and never launches Minecraft.

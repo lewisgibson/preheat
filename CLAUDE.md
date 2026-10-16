@@ -33,7 +33,7 @@ A client-side Minecraft mod that cuts the freeze at portals with Iris shaders by
 | `scripts/` | `fetch-deps.py`, the release scripts, `lab/` (the CPU lab), `realgame/` (the real-game harness) and `tests/` |
 | `deps.json` | Every external jar, pinned by sha1, and the compatibility matrix rows |
 | `docs/` | Everything beyond the README, the images, and the Modrinth listing in `docs/listing/` |
-| `.github/workflows/` | Build, Lint, Security, Release, and Dependabot Auto-Merge |
+| `.github/workflows/` | Build, Lint, Security, Release, Dependabot Auto-Merge and Dependabot Gradle Locks |
 | `.claude/skills/` | Agent skills (`release`); Codex finds them through the `.agents/skills` link |
 
 ## Rules

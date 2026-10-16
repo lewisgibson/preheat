@@ -1,0 +1,65 @@
+name: Dependabot Gradle Locks
+
+# Dependabot changes gradle/libs.versions.toml but not the dependency locks or gradle/verification-metadata.xml, so
+# its Gradle pull requests fail the build. This writes both the same way a person would (docs/releasing.md,
+# "Dependency updates"): the checksums are those Maven Central serves over HTTPS, recorded for new artifacts only, and
+# every artifact already pinned keeps its checksum. A push made with GITHUB_TOKEN starts no workflow, so the checks
+# are dispatched on the branch afterwards, and they verify the new files in strict mode like any other change.
+
+on: pull_request
+
+permissions:
+    contents: write
+    actions: write
+
+jobs:
+    locks:
+        name: Gradle Locks
+        if: github.event.pull_request.user.login == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/gradle/')
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7.0.1
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Setup Java
+              uses: actions/setup-java@v6.1.0
+              with:
+                  distribution: temurin
+                  java-version: '25'
+
+            - name: Setup Python
+              uses: actions/setup-python@v7.0.0
+              with:
+                  python-version: '3.12'
+
+            - name: Fetch Pinned Jars
+              run: python3 scripts/fetch-deps.py
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v6.4.0
+
+            - name: Write Locks and Verification Metadata
+              run: |
+                  ./gradlew --write-verification-metadata sha256 dependencies --write-locks
+                  ./gradlew --write-verification-metadata sha256 build
+
+            - name: Push and Run the Checks
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  BRANCH: ${{ github.head_ref }}
+              run: |
+                  set -euo pipefail
+                  git add -- '*.lockfile' gradle/verification-metadata.xml
+                  if git diff --cached --quiet; then
+                      echo "::notice::the locks and verification metadata already match"
+                      exit 0
+                  fi
+                  git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                      commit -m "Write the Gradle locks and verification metadata for the update"
+                  git push origin "HEAD:$BRANCH"
+                  for workflow in build.yaml lint.yaml security.yaml; do
+                      gh workflow run "$workflow" --ref "$BRANCH"
+                  done

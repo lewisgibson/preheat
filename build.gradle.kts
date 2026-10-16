@@ -38,7 +38,7 @@ java {
 
 repositories { mavenCentral() }
 
-// Every resolved external dependency is pinned in gradle.lockfile (refresh with `./gradlew dependencies --write-locks`).
+// Every resolved external dependency is pinned in gradle.lockfile (refresh both files as docs/building.md says).
 dependencyLocking {
     lockAllConfigurations()
     lockMode.set(LockMode.STRICT)
