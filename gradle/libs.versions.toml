@@ -2,7 +2,7 @@
 # Iris, Sodium, Distant Horizons, Mod Menu) are not here: they are pinned by sha1 in deps.json and fetched into libs/.
 
 [versions]
-asm = "9.10.1"
+asm = "9.11"
 errorprone = "2.50.0"
 errorprone-plugin = "5.1.1"
 jacoco = "0.8.15"
@@ -12,7 +12,7 @@ junit = "6.1.3"
 maven-artifact = "3.8.5"
 nullaway = "0.14.2"
 palantir-java-format = "2.102.0"
-spotless = "8.10.3"
+spotless = "8.10.4"
 
 [libraries]
 asm-commons = { module = "org.ow2.asm:asm-commons", version.ref = "asm" }
