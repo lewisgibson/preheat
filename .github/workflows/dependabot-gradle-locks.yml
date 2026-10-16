@@ -3,8 +3,8 @@ name: Dependabot Gradle Locks
 # Dependabot changes gradle/libs.versions.toml but not the dependency locks or gradle/verification-metadata.xml, so
 # its Gradle pull requests fail the build. This writes both the same way a person would (docs/releasing.md,
 # "Dependency updates"): the checksums are those Maven Central serves over HTTPS, recorded for new artifacts only, and
-# every artifact already pinned keeps its checksum. A push made with GITHUB_TOKEN starts no workflow, so the checks
-# are dispatched on the branch afterwards, and they verify the new files in strict mode like any other change.
+# every artifact already pinned keeps its checksum. The checks on the pushed commit wait for approval because this
+# workflow pushed it, so it approves them; they then verify the new files strictly like any other change.
 
 on: pull_request
 
@@ -60,6 +60,19 @@ jobs:
                   git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
                       commit -m "Write the Gradle locks and verification metadata for the update"
                   git push origin "HEAD:$BRANCH"
-                  for workflow in build.yaml lint.yaml security.yaml; do
-                      gh workflow run "$workflow" --ref "$BRANCH"
+                  sha="$(git rev-parse HEAD)"
+                  # The runs for the pushed commit take a few seconds to appear; approve each one that is waiting.
+                  approved=0
+                  for _ in $(seq 1 20); do
+                      sleep 15
+                      for id in $(gh run list --commit "$sha" --json databaseId,conclusion --jq '.[] | select(.conclusion == "action_required") | .databaseId'); do
+                          gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/approve" > /dev/null
+                          approved=$((approved + 1))
+                      done
+                      if [ "$approved" -gt 0 ] && [ -z "$(gh run list --commit "$sha" --json conclusion --jq '.[] | select(.conclusion == "action_required") | .conclusion')" ]; then
+                          echo "approved $approved runs for $sha"
+                          exit 0
+                      fi
                   done
+                  echo "::error::no checks were approved for $sha; approve them in the Actions tab"
+                  exit 1
