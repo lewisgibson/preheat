@@ -1,0 +1,10 @@
+{
+    "schemaVersion": 1,
+    "id": "preheat_testmod",
+    "version": "0.1.0",
+    "name": "Preheat Test Driver",
+    "description": "Drives the game through a route for Preheat's CPU lab. Test-only, never shipped.",
+    "environment": "client",
+    "mixins": ["testmod.mixins.json"],
+    "depends": { "minecraft": "*" }
+}

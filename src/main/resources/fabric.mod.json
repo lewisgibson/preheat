@@ -1,0 +1,30 @@
+{
+    "schemaVersion": 1,
+    "id": "preheat",
+    "version": "${version}",
+    "name": "Preheat",
+    "description": "Cuts the freeze at portals with Iris shaders by preparing every dimension ahead of time",
+    "authors": ["Lewis Gibson"],
+    "license": "LGPL-3.0-only",
+    "icon": "assets/preheat/icon.png",
+    "environment": "client",
+    "mixins": ["preheat.mixins.json"],
+    "entrypoints": {
+        "modmenu": ["com.lewisgibson.preheat.ui.ModMenuEntry"],
+        "sodium:config_api_user": ["com.lewisgibson.preheat.ui.sodium.SodiumOptions"]
+    },
+    "depends": {
+        "fabricloader": ">=0.19",
+        "minecraft": "${minecraft_range_fabric}",
+        "java": ">=25",
+        "iris": ">=1.11.4"
+    },
+    "suggests": {
+        "modmenu": "*"
+    },
+    "contact": {
+        "homepage": "https://github.com/lewisgibson/preheat",
+        "sources": "https://github.com/lewisgibson/preheat",
+        "issues": "https://github.com/lewisgibson/preheat/issues"
+    }
+}

@@ -1,0 +1,342 @@
+{
+    "_comment": "Every jar Preheat compiles or is checked against, pinned by sha1. scripts/fetch-deps.py downloads them into the gitignored libs/.",
+    "minecraft": {
+        "26.3": {
+            "url": "https://piston-meta.mojang.com/v1/packages/702fe59163c6ee6578607daa85811d9bc9c7cc40/26.3.json",
+            "sha1": "702fe59163c6ee6578607daa85811d9bc9c7cc40"
+        },
+        "26.2": {
+            "url": "https://piston-meta.mojang.com/v1/packages/d367f3dfbc0b3e14688df2311359deb609b234e3/26.2.json",
+            "sha1": "d367f3dfbc0b3e14688df2311359deb609b234e3"
+        },
+        "26.1.2": {
+            "url": "https://piston-meta.mojang.com/v1/packages/78941de799d2675be5bddca699b245d7cbd567ae/26.1.2.json",
+            "sha1": "78941de799d2675be5bddca699b245d7cbd567ae"
+        },
+        "26.1": {
+            "url": "https://piston-meta.mojang.com/v1/packages/a52c7511e13957149b53a175364c7ea7c4149bb8/26.1.json",
+            "sha1": "a52c7511e13957149b53a175364c7ea7c4149bb8"
+        }
+    },
+    "compile": {
+        "minecraft": "26.3",
+        "jars": [
+            {
+                "url": "https://maven.fabricmc.net/net/fabricmc/fabric-loader/0.19.5/fabric-loader-0.19.5.jar",
+                "sha1": "ff9e65cffca4a67f31523e1807fe0855940fcbfa",
+                "file": "fabric-loader-0.19.5.jar"
+            },
+            {
+                "url": "https://maven.fabricmc.net/net/fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/sponge-mixin-0.17.4+mixin.0.8.7.jar",
+                "sha1": "5f66cc9f59b8efaa942155a3d5a30599bf6640dd",
+                "file": "sponge-mixin-0.17.4+mixin.0.8.7.jar"
+            },
+            {
+                "url": "https://maven.neoforged.net/releases/net/neoforged/neoforge/26.3.0.58-beta/neoforge-26.3.0.58-beta-universal.jar",
+                "sha1": "a5a603e0d8271ac6fd579b959ea0d30fa7a3e4a3",
+                "file": "neoforge-26.3.0.58-beta-universal.jar"
+            },
+            {
+                "url": "https://maven.neoforged.net/releases/net/neoforged/fancymodloader/loader/12.0.9/loader-12.0.9.jar",
+                "sha1": "81339e82e37682000b1b174738cbc32f52c5f95d",
+                "file": "loader-12.0.9.jar"
+            },
+            {
+                "url": "https://maven.neoforged.net/releases/net/neoforged/bus/8.0.5/bus-8.0.5.jar",
+                "sha1": "5b2d33285ab5d1554e9798ad98c40d6ea3868bd5",
+                "file": "bus-8.0.5.jar"
+            },
+            {
+                "url": "https://maven.neoforged.net/releases/net/neoforged/mergetool/2.0.7/mergetool-2.0.7-api.jar",
+                "sha1": "793b18456e92c4a7f66d9b5d8bf7a9c1c7a20b20",
+                "file": "mergetool-2.0.7-api.jar"
+            },
+            {
+                "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/vTN4NRGW/iris-fabric-1.11.7%2Bmc26.3.jar",
+                "sha1": "fa03640ba1e4ef2f7ae3619c6373a06e46d0ba2c",
+                "file": "iris-fabric-1.11.7+mc26.3.jar"
+            },
+            {
+                "url": "https://cdn.modrinth.com/data/AANobbMI/versions/bAZQdGpg/sodium-fabric-0.9.2%2Bmc26.3.jar",
+                "sha1": "9acfe851e36f4fb27d7c5baa224e8bd4e0334283",
+                "file": "sodium-fabric-0.9.2+mc26.3.jar"
+            },
+            {
+                "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+                "sha1": "310c0363068dfae18e91f799ed671a591b6ad49a",
+                "file": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar"
+            },
+            {
+                "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/kyy7dbrZ/modmenu-21.0.0.jar",
+                "sha1": "66ec40f1cd0c037ddca2b5fc6b4b976d479c18e8",
+                "file": "modmenu-21.0.0.jar"
+            }
+        ]
+    },
+    "matrix": [
+        {
+            "minecraft": "26.1",
+            "loader": "fabric",
+            "iris": "1.11.4",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/sZbVsl2Q/iris-fabric-1.11.4%2Bmc26.1.2.jar",
+                    "sha1": "6a345caf8850e38dccd076f984cf02d6ec39ed83",
+                    "file": "iris-fabric-1.11.4+mc26.1.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/tZQ3jqnf/sodium-fabric-0.9.2%2Bmc26.1.2.jar",
+                    "sha1": "d107b02081262e243e80559192a2de86007155d6",
+                    "file": "sodium-fabric-0.9.2+mc26.1.2.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.1.2",
+            "loader": "fabric",
+            "iris": "1.11.4",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/sZbVsl2Q/iris-fabric-1.11.4%2Bmc26.1.2.jar",
+                    "sha1": "6a345caf8850e38dccd076f984cf02d6ec39ed83",
+                    "file": "iris-fabric-1.11.4+mc26.1.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/tZQ3jqnf/sodium-fabric-0.9.2%2Bmc26.1.2.jar",
+                    "sha1": "d107b02081262e243e80559192a2de86007155d6",
+                    "file": "sodium-fabric-0.9.2+mc26.1.2.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.1.2",
+            "loader": "neoforge",
+            "iris": "1.11.4",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/qE5Y7GrZ/iris-neoforge-1.11.4%2Bmc26.1.2.jar",
+                    "sha1": "15ac52fe7b35c66bb799f0f13021f549bf302c3c",
+                    "file": "iris-neoforge-1.11.4+mc26.1.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/zg4YQ9EL/sodium-neoforge-0.9.2%2Bmc26.1.2.jar",
+                    "sha1": "e03e21bf6553fc517241d59c2c116b8e5cc882f8",
+                    "file": "sodium-neoforge-0.9.2+mc26.1.2.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.2",
+            "loader": "fabric",
+            "iris": "1.11.4",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/gxZWWnKH/iris-fabric-1.11.4%2Bmc26.2.jar",
+                    "sha1": "bd0b24731a94b8fe164531e6345718d30ab08ed2",
+                    "file": "iris-fabric-1.11.4+mc26.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/xJZxADzI/sodium-fabric-0.9.2%2Bmc26.2.jar",
+                    "sha1": "62a70961a5b3e06938e06ab5f2dc4c5a51cf3323",
+                    "file": "sodium-fabric-0.9.2+mc26.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/aAow4a9f/DistantHorizons-3.3.3-26.2-fabric-neoforge.jar",
+                    "sha1": "22fa56cc57d6ed045ef3c4a3758ea5207ca5bcff",
+                    "file": "DistantHorizons-3.3.3-26.2-fabric-neoforge.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.2",
+            "loader": "neoforge",
+            "iris": "1.11.4",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/k55HdONq/iris-neoforge-1.11.4%2Bmc26.2.jar",
+                    "sha1": "decfbe06505849620da8f1381c88af1e122ecdd3",
+                    "file": "iris-neoforge-1.11.4+mc26.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/DmnNKsfS/sodium-neoforge-0.9.2%2Bmc26.2.jar",
+                    "sha1": "e0a7838c8f733fecf0f2cb729e3439f70c21809f",
+                    "file": "sodium-neoforge-0.9.2+mc26.2.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/aAow4a9f/DistantHorizons-3.3.3-26.2-fabric-neoforge.jar",
+                    "sha1": "22fa56cc57d6ed045ef3c4a3758ea5207ca5bcff",
+                    "file": "DistantHorizons-3.3.3-26.2-fabric-neoforge.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.3",
+            "loader": "fabric",
+            "iris": "1.11.5",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/2nyTWtzT/iris-fabric-1.11.5%2Bmc26.3.jar",
+                    "sha1": "cbbf54585ec4d46f56878b136bcd1f01313fc8c8",
+                    "file": "iris-fabric-1.11.5+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/bAZQdGpg/sodium-fabric-0.9.2%2Bmc26.3.jar",
+                    "sha1": "9acfe851e36f4fb27d7c5baa224e8bd4e0334283",
+                    "file": "sodium-fabric-0.9.2+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+                    "sha1": "310c0363068dfae18e91f799ed671a591b6ad49a",
+                    "file": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.3",
+            "loader": "fabric",
+            "iris": "1.11.6",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/bAdKrpw8/iris-fabric-1.11.6%2Bmc26.3.jar",
+                    "sha1": "63493cf8c58754bf6b9db297b895aeb17393e4df",
+                    "file": "iris-fabric-1.11.6+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/bAZQdGpg/sodium-fabric-0.9.2%2Bmc26.3.jar",
+                    "sha1": "9acfe851e36f4fb27d7c5baa224e8bd4e0334283",
+                    "file": "sodium-fabric-0.9.2+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+                    "sha1": "310c0363068dfae18e91f799ed671a591b6ad49a",
+                    "file": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.3",
+            "loader": "fabric",
+            "iris": "1.11.7",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/vTN4NRGW/iris-fabric-1.11.7%2Bmc26.3.jar",
+                    "sha1": "fa03640ba1e4ef2f7ae3619c6373a06e46d0ba2c",
+                    "file": "iris-fabric-1.11.7+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/bAZQdGpg/sodium-fabric-0.9.2%2Bmc26.3.jar",
+                    "sha1": "9acfe851e36f4fb27d7c5baa224e8bd4e0334283",
+                    "file": "sodium-fabric-0.9.2+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+                    "sha1": "310c0363068dfae18e91f799ed671a591b6ad49a",
+                    "file": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar"
+                }
+            ]
+        },
+        {
+            "minecraft": "26.3",
+            "loader": "neoforge",
+            "iris": "1.11.7",
+            "sodium": "0.9.2",
+            "jars": [
+                {
+                    "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/Ag5S66CF/iris-neoforge-1.11.7%2Bmc26.3.jar",
+                    "sha1": "57cbbd1f58b6226c633520541c1a3ae57c019373",
+                    "file": "iris-neoforge-1.11.7+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/AANobbMI/versions/VHtnT9Q4/sodium-neoforge-0.9.2%2Bmc26.3.jar",
+                    "sha1": "9015607e5ae2c5b9692ebf05113f9caca6ec41bf",
+                    "file": "sodium-neoforge-0.9.2+mc26.3.jar"
+                },
+                {
+                    "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+                    "sha1": "310c0363068dfae18e91f799ed671a591b6ad49a",
+                    "file": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar"
+                }
+            ]
+        }
+    ],
+    "neighbours": {
+        "_comment": "Other client mods players run beside Preheat, pinned by sha1. NeighbourMixinsTest reads their mixins and fails if any injects into a method Preheat injects into, so an overlap is always a reviewed entry in neighbour-overlaps.txt.",
+        "26.3": [
+            {
+                "file": "ImmediatelyFast-Fabric-1.17.1+26.3.jar",
+                "sha1": "f565bbeb201f2305e81761429d3f1f47e1c3a321",
+                "url": "https://cdn.modrinth.com/data/5ZwdcRci/versions/3MP9UR23/ImmediatelyFast-Fabric-1.17.1%2B26.3.jar"
+            },
+            {
+                "file": "sodium-extra-fabric-0.9.4+mc26.3.jar",
+                "sha1": "ff2056f222b751fe161123e71e55afd5b2f41da4",
+                "url": "https://cdn.modrinth.com/data/PtjYWJkn/versions/te2y9qZn/sodium-extra-fabric-0.9.4%2Bmc26.3.jar"
+            },
+            {
+                "file": "reeses-sodium-options-fabric-2.2.5+mc26.3.jar",
+                "sha1": "305aa813172358eb5e95d0a7af02a44326261226",
+                "url": "https://cdn.modrinth.com/data/Bh37bMuy/versions/EfchygKx/reeses-sodium-options-fabric-2.2.5%2Bmc26.3.jar"
+            },
+            {
+                "file": "entityculling-fabric-1.11.3-mc26.3.jar",
+                "sha1": "45f47f7a067f5efd733a32767dc3d1d770678b2a",
+                "url": "https://cdn.modrinth.com/data/NNAgCjsB/versions/X1g3VhTx/entityculling-fabric-1.11.3-mc26.3.jar"
+            },
+            {
+                "file": "moreculling-fabric-26.3-1.9.0.jar",
+                "sha1": "7308b0b0b6fffb0e076cabf97db7fc889d9ada68",
+                "url": "https://cdn.modrinth.com/data/51shyZVL/versions/t7vAlfgO/moreculling-fabric-26.3-1.9.0.jar"
+            },
+            {
+                "file": "lithium-fabric-0.26.2+mc26.3.jar",
+                "sha1": "dd5a4ec2c68d7601d8bce9076f789c55a5f8bef3",
+                "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/xS0Q8LSi/lithium-fabric-0.26.2%2Bmc26.3.jar"
+            },
+            {
+                "file": "c2me-fabric-mc26.3-0.4.2-alpha.0.90.jar",
+                "sha1": "dc8666e40bb04cef88628f66964130890ad44488",
+                "url": "https://cdn.modrinth.com/data/VSNURh3q/versions/ODMLK8M9/c2me-fabric-mc26.3-0.4.2-alpha.0.90.jar"
+            },
+            {
+                "file": "BetterF3-20.0.0-Fabric-26.3.jar",
+                "sha1": "418b70684cf0e5a48c861216c86ae97949bc39f7",
+                "url": "https://cdn.modrinth.com/data/8shC1gFX/versions/XB7u4eSf/BetterF3-20.0.0-Fabric-26.3.jar"
+            },
+            {
+                "file": "nvidium-0.4.4-beta7-26.3.jar",
+                "sha1": "6741b037b97a2a0b50231b52780feb893b3d51fc",
+                "url": "https://cdn.modrinth.com/data/SfMw2IZN/versions/8mVK1zbk/nvidium-0.4.4-beta7-26.3.jar"
+            },
+            {
+                "file": "ferritecore-9.0.0-fabric.jar",
+                "sha1": "eac76ff0f3753422c61b2c44487d0d195d88d4bc",
+                "url": "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar"
+            },
+            {
+                "file": "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+                "sha1": "310c0363068dfae18e91f799ed671a591b6ad49a",
+                "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar"
+            }
+        ],
+        "26.2": [
+            {
+                "file": "voxy-0.2.19-beta.jar",
+                "sha1": "a345fbd2b2d1e378452763e2864f1056b212ac98",
+                "url": "https://cdn.modrinth.com/data/fxxUqruK/versions/LzyXnE51/voxy-0.2.19-beta.jar"
+            },
+            {
+                "file": "DistantHorizons-3.3.3-26.2-fabric-neoforge.jar",
+                "sha1": "22fa56cc57d6ed045ef3c4a3758ea5207ca5bcff",
+                "url": "https://cdn.modrinth.com/data/uCdwusMi/versions/aAow4a9f/DistantHorizons-3.3.3-26.2-fabric-neoforge.jar"
+            }
+        ]
+    }
+}

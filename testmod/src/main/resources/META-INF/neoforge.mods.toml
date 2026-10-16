@@ -1,0 +1,13 @@
+# The same test-only driver on NeoForge (the lab's NeoForge client); no entry point, only its mixins.
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "LGPL-3.0-only"
+
+[[mods]]
+modId = "preheat_testmod"
+version = "0.1.0"
+displayName = "Preheat Test Driver"
+description = "Drives the game through a route for Preheat's CPU lab. Test-only, never shipped."
+
+[[mixins]]
+config = "testmod.mixins.json"

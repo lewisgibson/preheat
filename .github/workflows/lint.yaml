@@ -1,0 +1,94 @@
+name: Lint
+
+on:
+    workflow_dispatch: {}
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+    contents: read
+
+jobs:
+    prettier:
+        name: Prettier
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7.0.1
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v7.1.0
+              with:
+                  node-version: '24'
+
+            - name: Install Prettier
+              run: npm ci
+
+            - name: Check Non-Code Formatting
+              run: node_modules/.bin/prettier --check '**/*.{yml,yaml,json,md}'
+
+    actionlint:
+        name: Actionlint
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7.0.1
+
+            - name: Install actionlint
+              run: |
+                  cd /tmp
+                  curl -sSfL --retry 5 --retry-delay 3 --retry-all-errors https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz | tar xz actionlint
+                  sudo mv actionlint /usr/local/bin/actionlint
+                  actionlint -version
+
+            - name: Lint Workflows
+              run: actionlint -no-color
+
+    shellcheck:
+        name: Shellcheck
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7.0.1
+
+            - name: Install shellcheck
+              run: |
+                  cd /tmp
+                  curl -sSfL --retry 5 --retry-delay 3 --retry-all-errors https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz | tar xJ
+                  sudo mv shellcheck-v0.10.0/shellcheck /usr/local/bin/shellcheck
+                  shellcheck --version
+
+            - name: Lint Shell Scripts
+              run: git ls-files -z '*.sh' hooks/pre-commit | xargs -0 shellcheck --format=gcc
+
+    scripts:
+        name: Scripts
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7.0.1
+
+            - name: Setup Python
+              uses: actions/setup-python@v7.0.0
+              with:
+                  python-version: '3.12'
+
+            - name: Test Every Script
+              # The Modrinth upload is tested against a stand-in API, so nothing leaves the runner.
+              run: |
+                  pip install coverage==7.6.10
+                  coverage run --branch --include='scripts/*' --omit='scripts/tests/*' -m unittest discover -s scripts/tests
+                  coverage report --fail-under=100 -m
+
+            - name: Check the Changelog Format
+              run: python3 scripts/changelog.py check

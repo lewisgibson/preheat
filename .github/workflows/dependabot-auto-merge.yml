@@ -1,0 +1,35 @@
+name: Dependabot Auto-Merge
+
+# Merges Dependabot's minor and patch updates once the required checks pass; major updates wait for a person. The
+# wait comes from the checks marked as required on main (docs/releasing.md, "Dependency updates"). Without them,
+# `gh pr merge --auto` merges a passing-looking pull request at once, so the step leaves the update alone instead.
+
+on: pull_request
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    auto-merge:
+        if: github.event.pull_request.user.login == 'dependabot[bot]'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Fetch Dependabot Metadata
+              id: meta
+              uses: dependabot/fetch-metadata@v3.1.0
+
+            - name: Enable Auto-Merge for Minor and Patch Updates
+              if: steps.meta.outputs.update-type == 'version-update:semver-minor' || steps.meta.outputs.update-type == 'version-update:semver-patch'
+              run: |
+                  set -euo pipefail
+                  # The rules API answers 403 on a private repository on the free plan, which has no rulesets.
+                  required="$(gh api "repos/$GITHUB_REPOSITORY/rules/branches/main" --jq '[.[] | select(.type == "required_status_checks")] | length' 2>/dev/null)" || required=0
+                  if ! [ "$required" -gt 0 ] 2>/dev/null; then
+                      echo "::notice::main has no required checks, so this update waits for a person"
+                      exit 0
+                  fi
+                  gh pr merge --auto --squash "$PR_URL"
+              env:
+                  PR_URL: ${{ github.event.pull_request.html_url }}
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

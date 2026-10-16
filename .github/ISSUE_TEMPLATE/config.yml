@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+    - name: Questions and install help
+      url: https://github.com/lewisgibson/preheat/discussions
+      about: Ask about Preheat or discuss how it works with your setup.
+    - name: Report a security issue privately
+      url: https://github.com/lewisgibson/preheat/security/advisories/new
+      about: Report a vulnerability through GitHub's private reporting form.

@@ -1,0 +1,7 @@
+Third-party notices
+
+Preheat is licensed under the GNU Lesser General Public License, version 3 only. See LICENSE, COPYING.LESSER and COPYING.
+
+The release jars contain Preheat's code and resources, with no bundled third-party code. Minecraft, Iris, Sodium, Distant Horizons and Mod Menu are separate components. Preheat compiles against their jars but does not redistribute them.
+
+Build and test tools, including Gradle, the JDK, JUnit, ASM, Error Prone, NullAway, Spotless and JaCoCo, are not included in the release jars.

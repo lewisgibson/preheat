@@ -1,0 +1,15 @@
+.gradle/
+/build/
+libs/
+run/
+testmod/build/
+*.jfr
+.idea/
+*.iml
+.vscode/
+logs/
+node_modules/
+__pycache__/
+.coverage
+# One machine's agent notes and working notes (CLAUDE.md says to read AGENTS.local.md); never committed.
+*.local.md

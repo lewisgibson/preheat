@@ -1,0 +1,23 @@
+# Methods another mod in deps.json's neighbours also injects into, each checked to coexist with Preheat.
+# <minecraft> <jar> <class>#<method>   (methods are compared by name, so an entry may be another overload)
+#
+# Distant Horizons hooks the same world load, close and disconnect points as Preheat's barriers and disconnect trace,
+# by design: the barriers wait there for Distant Horizons' background close. Every hook on both sides is a plain
+# @Inject; DH's one cancellable hook there is on the other disconnect overload. The real-game harness runs with
+# Distant Horizons installed and checks the disconnect trace finishes.
+26.2 DistantHorizons-3.3.3-26.2-fabric-neoforge.jar net/minecraft/client/Minecraft#close
+26.2 DistantHorizons-3.3.3-26.2-fabric-neoforge.jar net/minecraft/client/Minecraft#disconnect
+26.2 DistantHorizons-3.3.3-26.2-fabric-neoforge.jar net/minecraft/client/Minecraft#doWorldLoad
+26.2 DistantHorizons-3.3.3-26.2-fabric-neoforge.jar net/minecraft/client/multiplayer/ClientPacketListener#<init>
+26.2 DistantHorizons-3.3.3-26.2-fabric-neoforge.jar net/minecraft/client/multiplayer/ClientPacketListener#close
+26.3 DistantHorizons-3.3.4-26.3-fabric-neoforge.jar net/minecraft/client/Minecraft#close
+26.3 DistantHorizons-3.3.4-26.3-fabric-neoforge.jar net/minecraft/client/Minecraft#disconnect
+26.3 DistantHorizons-3.3.4-26.3-fabric-neoforge.jar net/minecraft/client/Minecraft#doWorldLoad
+26.3 DistantHorizons-3.3.4-26.3-fabric-neoforge.jar net/minecraft/client/multiplayer/ClientPacketListener#<init>
+26.3 DistantHorizons-3.3.4-26.3-fabric-neoforge.jar net/minecraft/client/multiplayer/ClientPacketListener#close
+#
+# Voxy (26.2) adds a plain @Inject at the TAIL of disconnect; Preheat's disconnect trace marks HEAD and RETURN.
+26.2 voxy-0.2.19-beta.jar net/minecraft/client/Minecraft#disconnect
+#
+# ImmediatelyFast adds a plain @Inject at the HEAD of setLevel, as Preheat's barrier and dimension discovery do.
+26.3 ImmediatelyFast-Fabric-1.17.1+26.3.jar net/minecraft/client/Minecraft#setLevel

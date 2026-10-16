@@ -1,0 +1,86 @@
+name: Build
+
+on:
+    workflow_dispatch: {}
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: Build
+        # Deterministic checks only; no game runs here (docs/testing.md).
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7.0.1
+
+            - name: Setup Java
+              uses: actions/setup-java@v6.1.0
+              with:
+                  distribution: temurin
+                  java-version: '25'
+
+            - name: Setup Python
+              uses: actions/setup-python@v7.0.0
+              with:
+                  python-version: '3.12'
+
+            - name: Cache Pinned Jars
+              # Every jar in deps.json is pinned by sha1, so the cache is keyed on that file alone.
+              uses: actions/cache@v6.1.0
+              with:
+                  path: libs
+                  key: libs-${{ hashFiles('deps.json') }}
+
+            - name: Fetch Pinned Jars
+              run: python3 scripts/fetch-deps.py
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v6.4.0
+
+            - name: Build
+              run: ./gradlew build --stacktrace
+
+            - name: Summary
+              if: always()
+              run: |
+                  if [ -f build/reports/jacoco/test/jacocoTestReport.csv ]; then
+                      python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+                  import csv
+                  rows = list(csv.DictReader(open("build/reports/jacoco/test/jacocoTestReport.csv")))
+                  lm, lc, bm, bc = (sum(int(r[k]) for r in rows) for k in ("LINE_MISSED", "LINE_COVERED", "BRANCH_MISSED", "BRANCH_COVERED"))
+                  print(f"### Coverage\n\nLines {100 * lc / (lc + lm):.1f}%, branches {100 * bc / (bc + bm):.1f}%\n")
+                  PY
+                  fi
+                  if [ -f build/reports/compat/matrix.md ]; then
+                      printf '### Compatibility Matrix\n\n' >> "$GITHUB_STEP_SUMMARY"
+                      cat build/reports/compat/matrix.md >> "$GITHUB_STEP_SUMMARY"
+                  fi
+
+            - name: Upload Jars
+              uses: actions/upload-artifact@v7.0.2
+              with:
+                  name: preheat-jars
+                  path: build/libs/preheat-*.jar
+                  if-no-files-found: error
+
+            - name: Upload Reports
+              if: always()
+              uses: actions/upload-artifact@v7.0.2
+              with:
+                  name: reports
+                  path: |
+                      build/reports/jacoco/test/
+                      build/reports/tests/test/
+                      build/reports/compat/
+                  if-no-files-found: ignore

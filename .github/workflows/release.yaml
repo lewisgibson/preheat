@@ -1,0 +1,148 @@
+name: Release
+
+# A push to main whose version (mod_version in gradle.properties) has no GitHub release yet publishes it: the GitHub
+# release with both jars and their .sha256, then Modrinth when its token is set. Any other push stops after the
+# version check. docs/releasing.md has the whole process.
+#
+# Actions are pinned by commit here because this workflow holds the Modrinth token, and only the publish job sees it.
+
+on:
+    workflow_dispatch: {}
+    push:
+        branches: [main]
+
+permissions:
+    contents: read
+
+concurrency:
+    # A push waits for a release in progress rather than cancelling it half-way through.
+    group: release
+    cancel-in-progress: false
+
+jobs:
+    build:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        outputs:
+            version: ${{ steps.vars.outputs.version }}
+            new: ${{ steps.vars.outputs.new }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  # Every tag, so the release notes can compare with the previous release.
+                  fetch-depth: 0
+                  persist-credentials: false
+
+            - name: Setup Java
+              uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+              with:
+                  distribution: temurin
+                  java-version: '25'
+
+            - name: Setup Python
+              uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+              with:
+                  python-version: '3.12'
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+              with:
+                  cache-disabled: true
+
+            - name: Compute Version
+              id: vars
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  set -euo pipefail
+                  version="$(./gradlew -q printVersion)"
+                  [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::not a version: $version"; exit 1; }
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+                  if gh release view "v$version" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+                      echo "::notice::v$version is already released; nothing to publish"
+                      echo "new=false" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "new=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Build Release Notes
+              # Before the build, so a changelog entry that is missing or wrong stops the release early.
+              if: steps.vars.outputs.new == 'true'
+              env:
+                  VERSION: ${{ steps.vars.outputs.version }}
+              run: |
+                  mkdir dist
+                  python3 scripts/release-notes.py "$VERSION" dist/release-notes.md dist/changelog.md
+
+            - name: Fetch Pinned Jars
+              # Not cached: a release builds from jars checked against deps.json now.
+              if: steps.vars.outputs.new == 'true'
+              run: python3 scripts/fetch-deps.py
+
+            - name: Build
+              if: steps.vars.outputs.new == 'true'
+              run: ./gradlew build --stacktrace
+
+            - name: Checksum
+              if: steps.vars.outputs.new == 'true'
+              env:
+                  VERSION: ${{ steps.vars.outputs.version }}
+              run: |
+                  set -euo pipefail
+                  for mc in 26.3 26.2; do
+                      jar="preheat-${VERSION}+mc${mc}.jar"
+                      cp "build/libs/$jar" dist/
+                      (cd dist && sha256sum "$jar" | cut -d' ' -f1 > "$jar.sha256")
+                  done
+
+            - name: Upload
+              if: steps.vars.outputs.new == 'true'
+              uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+              with:
+                  name: release
+                  path: dist/
+                  if-no-files-found: error
+
+    publish:
+        needs: build
+        if: needs.build.outputs.new == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        permissions:
+            contents: write
+        env:
+            VERSION: ${{ needs.build.outputs.version }}
+        steps:
+            - name: Checkout
+              # For the publish script; nothing is built here.
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Download
+              uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+              with:
+                  name: release
+                  path: dist
+
+            - name: Publish GitHub Release
+              uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+              with:
+                  tag_name: v${{ needs.build.outputs.version }}
+                  target_commitish: ${{ github.sha }}
+                  name: Preheat ${{ needs.build.outputs.version }}
+                  body_path: dist/release-notes.md
+                  draft: false
+                  prerelease: false
+                  files: |
+                      dist/preheat-*.jar
+                      dist/preheat-*.jar.sha256
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Publish to Modrinth
+              env:
+                  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+                  MODRINTH_PROJECT_ID: ${{ vars.MODRINTH_PROJECT_ID }}
+              run: python3 scripts/publish-modrinth.py "$VERSION" dist/changelog.md dist/preheat-"$VERSION"+mc26.3.jar dist/preheat-"$VERSION"+mc26.2.jar

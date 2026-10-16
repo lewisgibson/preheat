@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+#
+# The gate on this repository. Install once with `make hooks` (git core.hooksPath=hooks).
+#
+# Each check runs only when what is staged needs it, and says so when it is skipped. Prettier,
+# actionlint and gitleaks install themselves at their pinned versions; any other missing tool
+# fails its check and says where to get it.
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
+FAILED=0
+
+run_check() {
+  local name=$1
+  shift
+  echo "== $name"
+  if "$@"; then
+    echo "   ok"
+  else
+    echo "   FAILED"
+    FAILED=1
+  fi
+}
+
+skip_check() {
+  echo "== $1 (skipped: $2)"
+}
+
+run_gated() {
+  local predicate=$1 name=$2 reason=$3
+  shift 3
+  if "$predicate"; then
+    run_check "$name" "$@"
+  else
+    skip_check "$name" "$reason"
+  fi
+}
+
+staged_matching() { grep -E "$1" <<<"$STAGED" || true; }
+
+has_prettier_changes() { grep -qE '\.(ya?ml|json|md)$' <<<"$STAGED"; }
+has_shell_changes() { grep -qE '\.sh$|^hooks/pre-commit$' <<<"$STAGED"; }
+has_workflow_changes() { grep -qE '^\.github/workflows/' <<<"$STAGED"; }
+has_script_changes() { grep -qE '^scripts/' <<<"$STAGED"; }
+has_changelog_changes() { grep -qE '^CHANGELOG\.md$' <<<"$STAGED"; }
+has_gradle_changes() { grep -qE '^(src/|testmod/|build\.gradle\.kts$|settings\.gradle\.kts$|gradle\.properties$|gradle/|deps\.json$)' <<<"$STAGED"; }
+
+check_prettier() {
+  local prettier="node_modules/.bin/prettier"
+  "$prettier" --version >/dev/null 2>&1 || npm ci
+  local files=()
+  while IFS= read -r f; do [ -n "$f" ] && files+=("$f"); done < <(staged_matching '\.(ya?ml|json|md)$')
+  "$prettier" --check "${files[@]}"
+}
+
+check_shellcheck() {
+  if ! command -v shellcheck >/dev/null 2>&1; then
+    echo "shellcheck not installed. Install: https://github.com/koalaman/shellcheck/releases"
+    return 1
+  fi
+  local files=()
+  while IFS= read -r f; do [ -n "$f" ] && files+=("$f"); done < <(staged_matching '\.sh$|^hooks/pre-commit$')
+  shellcheck "${files[@]}"
+}
+
+check_actionlint() {
+  command -v actionlint >/dev/null 2>&1 || go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.7
+  actionlint
+}
+
+check_gitleaks() {
+  command -v gitleaks >/dev/null 2>&1 || go install github.com/zricethezav/gitleaks/v8@v8.21.2
+  gitleaks protect --staged --no-banner --redact
+}
+
+check_scripts() {
+  python3 -m coverage --version >/dev/null 2>&1 || {
+    echo "coverage not installed. Install: pip install coverage==7.6.10"
+    return 1
+  }
+  python3 -m coverage run --branch --include='scripts/*' --omit='scripts/tests/*' -m unittest discover -s scripts/tests -q &&
+    python3 -m coverage report --fail-under=100 -m
+}
+
+check_changelog() {
+  python3 scripts/changelog.py check
+}
+
+check_gradle() {
+  # `check` is Spotless, Error Prone, the tests, the compatibility matrix and the 100% coverage gate;
+  # the jars themselves are not needed to decide whether the commit is good.
+  python3 scripts/fetch-deps.py >/dev/null && ./gradlew check --quiet
+}
+
+run_gated has_prettier_changes "prettier" "no yaml/json/md staged" check_prettier
+run_gated has_shell_changes "shellcheck" "no shell scripts staged" check_shellcheck
+run_gated has_script_changes "script tests" "no scripts staged" check_scripts
+run_gated has_changelog_changes "changelog" "CHANGELOG.md not staged" check_changelog
+run_gated has_workflow_changes "actionlint" "no workflow files staged" check_actionlint
+run_check "gitleaks" check_gitleaks
+run_gated has_gradle_changes "gradle check" "no source or build files staged" check_gradle
+
+if [ "$FAILED" -ne 0 ]; then
+  echo
+  echo "pre-commit: a check failed; nothing was committed."
+  exit 1
+fi

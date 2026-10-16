@@ -1,0 +1,8 @@
+{
+    "name": "preheat-tooling",
+    "private": true,
+    "description": "Pins the formatter the pre-commit hook and the Lint workflow run; the mod itself is Gradle.",
+    "devDependencies": {
+        "prettier": "3.9.10"
+    }
+}

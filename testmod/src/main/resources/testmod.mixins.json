@@ -1,0 +1,7 @@
+{
+    "required": true,
+    "package": "com.lewisgibson.preheat.testmod.mixin",
+    "compatibilityLevel": "JAVA_25",
+    "client": ["GlBackendMixin", "MinecraftMixin", "MojangStagingBufferMixin", "IrisRenderSystemMixin"],
+    "injectors": { "defaultRequire": 1 }
+}
