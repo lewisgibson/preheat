@@ -2,7 +2,7 @@
 # Iris, Sodium, Distant Horizons, Mod Menu) are not here: they are pinned by sha1 in deps.json and fetched into libs/.
 
 [versions]
-asm = "9.11"
+asm = "9.11.1"
 errorprone = "2.50.0"
 errorprone-plugin = "5.1.1"
 jacoco = "0.8.15"
